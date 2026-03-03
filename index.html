@@ -3,17 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Improved Chat Application</title>
+    <title>Nexora 2.0</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="script.js" defer></script>
 </head>
 <body>
-    <div class="chat-container">
-        <div class="messages" id="messageList"></div>
-        <form id="messageForm">
-            <input type="text" id="messageInput" placeholder="Type your message..." required />
-            <button type="submit">Send</button>
-        </form>
-    </div>
+    <header>
+        <h1>Welcome to Nexora 2.0</h1>
+        <nav>
+            <ul>
+                <li><a href="#login">Login</a></li>
+                <li><a href="#members">Members View</a></li>
+                <li><a href="#requests">Requests Section</a></li>
+                <li><a href="#chats">Chats Feature</a></li>
+                <li><a href="#settings">Settings Page</a></li>
+                <li><a href="#courses">Course Selection</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section id="login">
+            <h2>Login Page</h2>
+            <form>
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required>
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+                <button type="submit">Login</button>
+            </form>
+        </section>
+        <section id="members">
+            <h2>Members View</h2>
+            <div id="members-list"></div>
+        </section>
+        <section id="requests">
+            <h2>Requests Section</h2>
+            <div id="requests-list"></div>
+        </section>
+        <section id="chats">
+            <h2>Chats Feature</h2>
+            <div id="chat-area"></div>
+        </section>
+        <section id="settings">
+            <h2>Settings Page</h2>
+            <form>
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+                <label for="notifications">Notifications:</label>
+                <input type="checkbox" id="notifications" name="notifications">
+                <button type="submit">Save Settings</button>
+            </form>
+        </section>
+        <section id="courses">
+            <h2>Course Selection</h2>
+            <select id="course-select">
+                <option value="course1">Course 1</option>
+                <option value="course2">Course 2</option>
+            </select>
+            <button type="button">Enroll</button>
+        </section>
+    </main>
+    <script src="script.js"></script>
 </body>
 </html>
