@@ -1,67 +1,249 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexora 2.0</title>
-    <link rel="stylesheet" href="styles.css">
+<title>Nexora 2.0</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:#0f172a;
+  color:white;
+}
+
+/* LOGIN PAGE */
+.loginPage{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+}
+
+.card{
+  background:#1e293b;
+  padding:25px;
+  border-radius:15px;
+  width:90%;
+  max-width:350px;
+  text-align:center;
+}
+
+input,select{
+  width:100%;
+  padding:10px;
+  margin-top:10px;
+  border:none;
+  border-radius:8px;
+  outline:none;
+}
+
+button{
+  margin-top:15px;
+  padding:10px;
+  width:100%;
+  border:none;
+  border-radius:8px;
+  background:#6366f1;
+  color:white;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+/* APP PAGE */
+.app{
+  display:none;
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+}
+
+.header{
+  background:#1e293b;
+  padding:15px;
+  text-align:center;
+  font-weight:bold;
+}
+
+.content{
+  flex:1;
+  overflow-y:auto;
+  padding:15px;
+}
+
+.bottomNav{
+  display:flex;
+  justify-content:space-around;
+  background:#1e293b;
+  padding:10px 0;
+}
+
+.navItem{
+  text-align:center;
+  cursor:pointer;
+  font-size:14px;
+}
+
+.memberCard, .chatBubble{
+  background:#334155;
+  padding:10px;
+  border-radius:10px;
+  margin-bottom:8px;
+}
+
+.chatBubble{
+  width:fit-content;
+}
+
+.inputBox{
+  display:flex;
+  padding:10px;
+  background:#1e293b;
+}
+
+.inputBox input{
+  flex:1;
+  margin-right:8px;
+}
+</style>
 </head>
+
 <body>
-    <header>
-        <h1>Welcome to Nexora 2.0</h1>
-        <nav>
-            <ul>
-                <li><a href="#login">Login</a></li>
-                <li><a href="#members">Members View</a></li>
-                <li><a href="#requests">Requests Section</a></li>
-                <li><a href="#chats">Chats Feature</a></li>
-                <li><a href="#settings">Settings Page</a></li>
-                <li><a href="#courses">Course Selection</a></li>
-            </ul>
-        </nav>
-    </header>
-    <main>
-        <section id="login">
-            <h2>Login Page</h2>
-            <form>
-                <label for="username">Username:</label>
-                <input type="text" id="username" name="username" required>
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" required>
-                <button type="submit">Login</button>
-            </form>
-        </section>
-        <section id="members">
-            <h2>Members View</h2>
-            <div id="members-list"></div>
-        </section>
-        <section id="requests">
-            <h2>Requests Section</h2>
-            <div id="requests-list"></div>
-        </section>
-        <section id="chats">
-            <h2>Chats Feature</h2>
-            <div id="chat-area"></div>
-        </section>
-        <section id="settings">
-            <h2>Settings Page</h2>
-            <form>
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email" required>
-                <label for="notifications">Notifications:</label>
-                <input type="checkbox" id="notifications" name="notifications">
-                <button type="submit">Save Settings</button>
-            </form>
-        </section>
-        <section id="courses">
-            <h2>Course Selection</h2>
-            <select id="course-select">
-                <option value="course1">Course 1</option>
-                <option value="course2">Course 2</option>
-            </select>
-            <button type="button">Enroll</button>
-        </section>
-    </main>
-    <script src="script.js"></script>
+
+<!-- LOGIN -->
+<div class="loginPage" id="loginPage">
+  <div class="card">
+    <h2>Nexora</h2>
+    <input id="name" placeholder="Your name">
+    <input id="code" placeholder="College Code">
+    <select id="course">
+      <option value="">Select Course</option>
+      <option>CS</option>
+      <option>CSE</option>
+      <option>AI-DS</option>
+      <option>DS</option>
+      <option>IT</option>
+      <option>AI-ML</option>
+    </select>
+    <button onclick="login()">Enter</button>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="app" id="app">
+
+  <div class="header" id="headerTitle">Members</div>
+
+  <div class="content" id="content"></div>
+
+  <div class="inputBox" id="chatInputBox" style="display:none;">
+    <input id="messageInput" placeholder="Type message...">
+    <button onclick="sendMessage()">Send</button>
+  </div>
+
+  <div class="bottomNav">
+    <div class="navItem" onclick="showMembers()">👥<br>Members</div>
+    <div class="navItem" onclick="showRequests()">📩<br>Requests</div>
+    <div class="navItem" onclick="showChats()">💬<br>Chats</div>
+    <div class="navItem" onclick="showSettings()">⚙<br>Settings</div>
+  </div>
+
+</div>
+
+<script>
+
+let currentUser = "";
+let currentCourse = "";
+let activeChatUser = "";
+
+function login(){
+  const name = document.getElementById("name").value;
+  const code = document.getElementById("code").value;
+  const course = document.getElementById("course").value;
+
+  if(name==="" || code!=="1234" || course===""){
+    alert("Invalid details!");
+    return;
+  }
+
+  currentUser = name;
+  currentCourse = course;
+
+  let users = JSON.parse(localStorage.getItem("users")) || [];
+  users.push({name, course});
+  localStorage.setItem("users", JSON.stringify(users));
+
+  document.getElementById("loginPage").style.display="none";
+  document.getElementById("app").style.display="flex";
+
+  showMembers();
+}
+
+/* MEMBERS */
+function showMembers(){
+  document.getElementById("headerTitle").innerText="Members";
+  document.getElementById("chatInputBox").style.display="none";
+
+  const content = document.getElementById("content");
+  content.innerHTML="";
+
+  let users = JSON.parse(localStorage.getItem("users")) || [];
+
+  users.forEach(u=>{
+    if(u.course===currentCourse && u.name!==currentUser){
+      content.innerHTML+=`
+        <div class="memberCard">
+          ${u.name} (${u.course})
+          <button onclick="sendRequest('${u.name}')">Request</button>
+        </div>
+      `;
+    }
+  });
+}
+
+/* REQUESTS */
+function showRequests(){
+  document.getElementById("headerTitle").innerText="Requests";
+  document.getElementById("chatInputBox").style.display="none";
+  document.getElementById("content").innerHTML="Demo Requests UI";
+}
+
+function sendRequest(name){
+  alert("Request sent to "+name+" (Frontend demo)");
+}
+
+/* CHATS */
+function showChats(){
+  document.getElementById("headerTitle").innerText="Chats";
+  document.getElementById("content").innerHTML="Select a member to chat.";
+  document.getElementById("chatInputBox").style.display="flex";
+}
+
+function sendMessage(){
+  const input = document.getElementById("messageInput");
+  const text = input.value;
+  if(text==="") return;
+
+  const bubble = document.createElement("div");
+  bubble.className="chatBubble";
+  bubble.innerText=currentUser+": "+text;
+
+  document.getElementById("content").appendChild(bubble);
+  input.value="";
+}
+
+/* SETTINGS */
+function showSettings(){
+  document.getElementById("headerTitle").innerText="Settings";
+  document.getElementById("chatInputBox").style.display="none";
+  document.getElementById("content").innerHTML=`
+    <div class="memberCard">
+      Logged in as: ${currentUser}<br>
+      Course: ${currentCourse}
+    </div>
+  `;
+}
+
+</script>
 </body>
 </html>
