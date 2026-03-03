@@ -490,11 +490,23 @@ function login(){
     return;
   }
 
-  // Check for duplicate registration
-  if(allUsers.find(u => u.name.toLowerCase() === name.toLowerCase())){
-    showError("User already registered!");
-    return;
-  }
+  
+ // Check if user already exists
+const existingUser = allUsers.find(u => 
+  u.name.toLowerCase() === name.toLowerCase()
+);
+
+if(existingUser){
+  // Login existing user
+  currentUser = existingUser.name;
+  currentCourse = existingUser.course;
+
+  document.getElementById("loginPage").style.display = "none";
+  document.getElementById("app").style.display = "flex";
+
+  showMembers();
+  return;
+}
 
   // Create new user
   const newUser = {
