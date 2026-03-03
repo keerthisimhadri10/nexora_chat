@@ -1,18 +1,21 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Nexora 2.0 - Student Network</title>
+<title>Nexora 2.0</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta charset="UTF-8">
 
 <style>
-*{box-sizing:border-box}
+*{box-sizing:border-box;margin:0;padding:0;font-family:Segoe UI}
 
 body{
-  margin:0;
-  font-family:'Segoe UI',sans-serif;
   background:#0f172a;
   color:white;
+  transition:0.3s;
+}
+
+body.light{
+  background:#f1f5f9;
+  color:#111;
 }
 
 /* LOGIN */
@@ -21,47 +24,41 @@ body{
   justify-content:center;
   align-items:center;
   height:100vh;
-  background:linear-gradient(135deg,#0f172a,#1e293b);
 }
 
 .card{
   background:#1e293b;
-  padding:40px;
-  border-radius:15px;
+  padding:30px;
+  border-radius:12px;
   width:90%;
   max-width:400px;
-  box-shadow:0 10px 30px rgba(0,0,0,.5);
 }
 
-input,select{
+body.light .card{background:white}
+
+input{
   width:100%;
-  padding:12px;
-  margin-bottom:15px;
-  border-radius:8px;
+  padding:10px;
+  margin-bottom:12px;
+  border-radius:6px;
   border:1px solid #334155;
-  background:#0f172a;
-  color:white;
 }
 
 button{
-  width:100%;
-  padding:12px;
+  padding:10px;
   border:none;
-  border-radius:8px;
-  background:#6366f1;
-  color:white;
-  font-weight:bold;
+  border-radius:6px;
   cursor:pointer;
+  font-weight:bold;
 }
 
-button:hover{background:#4f46e5}
+.primary{background:#6366f1;color:white}
+.danger{background:#ef4444;color:white}
+.success{background:#10b981;color:white}
+.gray{background:#64748b;color:white}
 
 /* APP */
-.app{
-  display:none;
-  flex-direction:column;
-  height:100vh;
-}
+.app{display:none;flex-direction:column;height:100vh}
 
 .header{
   background:#1e293b;
@@ -69,80 +66,61 @@ button:hover{background:#4f46e5}
   display:flex;
   justify-content:space-between;
   align-items:center;
-  border-bottom:1px solid #334155;
 }
 
-.logoutBtn{
-  background:#ef4444;
-  padding:6px 12px;
-  border-radius:6px;
-  font-size:12px;
+body.light .header{background:#e2e8f0}
+
+.content{flex:1;overflow:auto;padding:15px}
+
+.bottomNav{
+  display:flex;
+  background:#1e293b;
 }
 
-.content{
+body.light .bottomNav{background:#e2e8f0}
+
+.navItem{
   flex:1;
-  overflow:auto;
-  padding:15px;
+  text-align:center;
+  padding:10px;
+  cursor:pointer;
 }
 
-.searchBar{
-  margin-bottom:15px;
-}
-
-.searchBar input{
-  margin:0;
-}
+.navItem.active{background:#6366f1;color:white}
 
 .memberCard{
   background:#334155;
   padding:12px;
-  border-radius:10px;
+  border-radius:8px;
   margin-bottom:10px;
   display:flex;
   justify-content:space-between;
   align-items:center;
 }
 
-.memberName{font-weight:bold}
+body.light .memberCard{background:#cbd5e1}
 
-.emptyState{
-  text-align:center;
-  color:#94a3b8;
-  margin-top:40px;
-}
+.searchBar input{margin-bottom:15px}
 
-.bottomNav{
-  display:flex;
-  justify-content:space-around;
-  background:#1e293b;
-  padding:10px 0;
-  border-top:1px solid #334155;
-}
-
-.navItem{
-  cursor:pointer;
+.smallBtn{
+  padding:6px 10px;
   font-size:12px;
-  text-align:center;
-  flex:1;
+  margin-left:5px;
 }
 
-.navItem.active{
-  background:#6366f1;
-  border-radius:8px;
-}
+.empty{text-align:center;margin-top:30px;color:gray}
 </style>
 </head>
-
 <body>
 
 <!-- LOGIN -->
 <div class="loginPage" id="loginPage">
   <div class="card">
-    <h2>Nexora</h2>
-    <input id="name" placeholder="Enter name">
-    <input id="code" placeholder="College code">
-    <button onclick="login()">Enter Nexora</button>
-    <p id="error" style="color:red;font-size:12px;"></p>
+    <h2>Nexora</h2><br>
+    <input id="name" placeholder="Enter Name">
+    <input id="code" placeholder="College Code">
+    <button class="primary" onclick="login()">Login</button>
+    <p id="error" style="color:red;margin-top:10px"></p>
   </div>
 </div>
 
@@ -151,14 +129,18 @@ button:hover{background:#4f46e5}
 
   <div class="header">
     <div id="headerTitle">Members</div>
-    <button class="logoutBtn" onclick="logout()">Logout</button>
+    <div>
+      <button class="gray smallBtn" onclick="toggleTheme()">Theme</button>
+      <button class="danger smallBtn" onclick="logout()">Logout</button>
+    </div>
   </div>
 
   <div class="content" id="content"></div>
 
   <div class="bottomNav">
-    <div class="navItem active" onclick="showMembers()">👥<br>Members</div>
-    <div class="navItem" onclick="showSettings()">⚙️<br>Settings</div>
+    <div class="navItem active" onclick="showMembers()">Members</div>
+    <div class="navItem" onclick="showFriends()">Friends</div>
+    <div class="navItem" onclick="showProfile()">Profile</div>
   </div>
 
 </div>
@@ -166,33 +148,39 @@ button:hover{background:#4f46e5}
 <script>
 
 let currentUser=""
-let allUsers=[]
+let users=[]
+let friends={}
+let requests={}
 
 function init(){
-  allUsers=JSON.parse(localStorage.getItem("users"))||[]
+  users=JSON.parse(localStorage.getItem("nx_users"))||[]
+  friends=JSON.parse(localStorage.getItem("nx_friends"))||{}
+  requests=JSON.parse(localStorage.getItem("nx_requests"))||{}
 }
 
 function login(){
   init()
   const name=document.getElementById("name").value.trim()
   const code=document.getElementById("code").value.trim()
-  if(name==""||code==""){
-    document.getElementById("error").innerText="Fill all fields"
-    return
-  }
-  if(code!=="1234"){
-    document.getElementById("error").innerText="Invalid code (1234)"
+  if(name==""||code=="1234"==false){
+    document.getElementById("error").innerText="Invalid details (Code:1234)"
     return
   }
 
-  let user=allUsers.find(u=>u.name.toLowerCase()==name.toLowerCase())
+  let user=users.find(u=>u.name.toLowerCase()==name.toLowerCase())
   if(!user){
     user={id:Date.now(),name:name,joined:new Date()}
-    allUsers.push(user)
-    localStorage.setItem("users",JSON.stringify(allUsers))
+    users.push(user)
+    localStorage.setItem("nx_users",JSON.stringify(users))
   }
 
-  currentUser=name
+  if(!friends[user.id]) friends[user.id]=[]
+  if(!requests[user.id]) requests[user.id]={sent:[],received:[]}
+
+  localStorage.setItem("nx_friends",JSON.stringify(friends))
+  localStorage.setItem("nx_requests",JSON.stringify(requests))
+
+  currentUser=user.name
   document.getElementById("loginPage").style.display="none"
   document.getElementById("app").style.display="flex"
   showMembers()
@@ -205,66 +193,112 @@ function logout(){
 }
 
 function showMembers(){
-  updateNav(0)
+  setActive(0)
+  document.getElementById("headerTitle").innerText="Members"
   const content=document.getElementById("content")
   content.innerHTML=`
     <div class="searchBar">
-      <input type="text" id="searchInput" placeholder="Search members..." onkeyup="filterMembers()">
+      <input type="text" id="search" placeholder="Search users..." onkeyup="renderMembers()">
     </div>
-    <div id="membersList"></div>
+    <div id="list"></div>
   `
-  renderMembers("")
+  renderMembers()
 }
 
-function renderMembers(filter){
-  const list=document.getElementById("membersList")
-  const members=allUsers.filter(u=>u.name!==currentUser)
-        .filter(u=>u.name.toLowerCase().includes(filter.toLowerCase()))
+function renderMembers(){
+  const filter=document.getElementById("search").value.toLowerCase()
+  const list=document.getElementById("list")
+  list.innerHTML=""
+  const me=users.find(u=>u.name==currentUser)
 
-  if(members.length==0){
-    list.innerHTML='<div class="emptyState">No users found</div>'
+  users.filter(u=>u.name!=currentUser && u.name.toLowerCase().includes(filter))
+  .forEach(u=>{
+    const isFriend=friends[me.id].includes(u.id)
+    const sent=requests[me.id].sent.includes(u.id)
+
+    list.innerHTML+=`
+      <div class="memberCard">
+        <div>${u.name}</div>
+        <div>
+          ${isFriend?
+            `<button class="danger smallBtn" onclick="removeFriend(${u.id})">Remove</button>`:
+            sent?
+            `<button class="gray smallBtn">Sent</button>`:
+            `<button class="primary smallBtn" onclick="sendRequest(${u.id})">Add</button>`
+          }
+        </div>
+      </div>
+    `
+  })
+
+  if(list.innerHTML=="") list.innerHTML='<div class="empty">No users found</div>'
+}
+
+function sendRequest(id){
+  const me=users.find(u=>u.name==currentUser)
+  requests[me.id].sent.push(id)
+  requests[id].received.push(me.id)
+  localStorage.setItem("nx_requests",JSON.stringify(requests))
+  renderMembers()
+}
+
+function showFriends(){
+  setActive(1)
+  document.getElementById("headerTitle").innerText="Friends"
+  const content=document.getElementById("content")
+  const me=users.find(u=>u.name==currentUser)
+  const myFriends=friends[me.id]
+
+  if(myFriends.length==0){
+    content.innerHTML='<div class="empty">No Friends</div>'
     return
   }
 
-  list.innerHTML=""
-  members.forEach(m=>{
-    list.innerHTML+=`
+  content.innerHTML=""
+  myFriends.forEach(fid=>{
+    const u=users.find(x=>x.id==fid)
+    content.innerHTML+=`
       <div class="memberCard">
-        <div>
-          <div class="memberName">${m.name}</div>
-        </div>
+        <div>${u.name}</div>
       </div>
     `
   })
 }
 
-function filterMembers(){
-  const value=document.getElementById("searchInput").value
-  renderMembers(value)
+function removeFriend(id){
+  const me=users.find(u=>u.name==currentUser)
+  friends[me.id]=friends[me.id].filter(f=>f!=id)
+  friends[id]=friends[id].filter(f=>f!=me.id)
+  localStorage.setItem("nx_friends",JSON.stringify(friends))
+  renderMembers()
 }
 
-function showSettings(){
-  updateNav(1)
+function showProfile(){
+  setActive(2)
+  document.getElementById("headerTitle").innerText="Profile"
   const content=document.getElementById("content")
-  const user=allUsers.find(u=>u.name==currentUser)
+  const me=users.find(u=>u.name==currentUser)
+
   content.innerHTML=`
     <div class="memberCard">
       <div>
-        <div class="memberName">${user.name}</div>
-        <div style="font-size:12px;color:#94a3b8;">Joined: ${new Date(user.joined).toLocaleDateString()}</div>
+        <h3>${me.name}</h3>
+        <p>Joined: ${new Date(me.joined).toLocaleDateString()}</p>
       </div>
     </div>
   `
 }
 
-function updateNav(index){
-  const items=document.querySelectorAll(".navItem")
-  items.forEach(i=>i.classList.remove("active"))
-  items[index].classList.add("active")
+function toggleTheme(){
+  document.body.classList.toggle("light")
+}
+
+function setActive(i){
+  document.querySelectorAll(".navItem").forEach(n=>n.classList.remove("active"))
+  document.querySelectorAll(".navItem")[i].classList.add("active")
 }
 
 init()
 </script>
-
 </body>
 </html>
