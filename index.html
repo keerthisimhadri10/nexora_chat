@@ -1,249 +1,878 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Nexora 2.0</title>
+<title>Nexora 2.0 - Student Network</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
 
 <style>
-body{
-  margin:0;
-  font-family:Arial, sans-serif;
-  background:#0f172a;
-  color:white;
+* {
+  box-sizing: border-box;
 }
 
-/* LOGIN PAGE */
+body{
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #0f172a;
+  color: white;
+}
+
+/* ============ LOGIN PAGE ============ */
 .loginPage{
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  height:100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
 }
 
 .card{
-  background:#1e293b;
-  padding:25px;
-  border-radius:15px;
-  width:90%;
-  max-width:350px;
-  text-align:center;
+  background: #1e293b;
+  padding: 40px;
+  border-radius: 15px;
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  border: 1px solid #334155;
 }
 
-input,select{
-  width:100%;
-  padding:10px;
-  margin-top:10px;
-  border:none;
-  border-radius:8px;
-  outline:none;
+.card h1{
+  margin: 0 0 10px 0;
+  font-size: 32px;
+  color: #6366f1;
+}
+
+.card p{
+  margin: 0 0 20px 0;
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.formGroup{
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+.formGroup label{
+  display: block;
+  font-size: 12px;
+  color: #cbd5e1;
+  margin-bottom: 5px;
+  font-weight: 500;
+}
+
+input, select{
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  outline: none;
+  background: #0f172a;
+  color: white;
+  font-size: 14px;
+  transition: border-color 0.3s;
+}
+
+input:focus, select:focus{
+  border-color: #6366f1;
+  box-shadow: 0 0 10px rgba(99, 102, 241, 0.2);
+}
+
+input::placeholder{
+  color: #64748b;
 }
 
 button{
-  margin-top:15px;
-  padding:10px;
-  width:100%;
-  border:none;
-  border-radius:8px;
-  background:#6366f1;
-  color:white;
-  font-weight:bold;
-  cursor:pointer;
+  margin-top: 20px;
+  padding: 12px;
+  width: 100%;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 16px;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
-/* APP PAGE */
+button:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
+}
+
+button:active{
+  transform: translateY(0);
+}
+
+.error{
+  color: #ef4444;
+  font-size: 12px;
+  margin-top: 10px;
+  display: none;
+}
+
+/* ============ APP PAGE ============ */
 .app{
-  display:none;
-  height:100vh;
-  display:flex;
-  flex-direction:column;
+  display: none;
+  height: 100vh;
+  flex-direction: column;
 }
 
 .header{
-  background:#1e293b;
-  padding:15px;
-  text-align:center;
-  font-weight:bold;
+  background: #1e293b;
+  padding: 15px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 18px;
+  border-bottom: 1px solid #334155;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.headerTitle{
+  flex: 1;
+}
+
+.logoutBtn{
+  background: #ef4444;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.logoutBtn:hover{
+  background: #dc2626;
 }
 
 .content{
-  flex:1;
-  overflow-y:auto;
-  padding:15px;
+  flex: 1;
+  overflow-y: auto;
+  padding: 15px;
 }
 
 .bottomNav{
-  display:flex;
-  justify-content:space-around;
-  background:#1e293b;
-  padding:10px 0;
+  display: flex;
+  justify-content: space-around;
+  background: #1e293b;
+  padding: 10px 0;
+  border-top: 1px solid #334155;
 }
 
 .navItem{
-  text-align:center;
-  cursor:pointer;
-  font-size:14px;
+  text-align: center;
+  cursor: pointer;
+  font-size: 12px;
+  padding: 8px;
+  border-radius: 8px;
+  transition: background 0.3s;
+  flex: 1;
 }
 
-.memberCard, .chatBubble{
-  background:#334155;
-  padding:10px;
-  border-radius:10px;
-  margin-bottom:8px;
+.navItem:hover{
+  background: #334155;
+}
+
+.navItem.active{
+  background: #6366f1;
+}
+
+/* ============ CARDS & BUBBLES ============ */
+.memberCard{
+  background: #334155;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 12px;
+  border-left: 4px solid #6366f1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background 0.3s;
+}
+
+.memberCard:hover{
+  background: #475569;
+}
+
+.memberInfo{
+  flex: 1;
+}
+
+.memberName{
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.memberCourse{
+  font-size: 12px;
+  color: #cbd5e1;
+}
+
+.actionBtn{
+  background: #6366f1;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: bold;
+  transition: background 0.3s;
+}
+
+.actionBtn:hover{
+  background: #4f46e5;
+}
+
+.actionBtn.accept{
+  background: #10b981;
+}
+
+.actionBtn.accept:hover{
+  background: #059669;
+}
+
+.actionBtn.reject{
+  background: #ef4444;
+}
+
+.actionBtn.reject:hover{
+  background: #dc2626;
 }
 
 .chatBubble{
-  width:fit-content;
+  background: #334155;
+  padding: 12px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  max-width: 80%;
+  word-wrap: break-word;
 }
 
+.chatBubble.sent{
+  background: #6366f1;
+  margin-left: auto;
+  border-bottom-right-radius: 0;
+}
+
+.chatBubble.received{
+  background: #334155;
+  margin-right: auto;
+  border-bottom-left-radius: 0;
+}
+
+.chatBubbleUser{
+  font-size: 11px;
+  color: #cbd5e1;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.chatBubbleTime{
+  font-size: 10px;
+  color: #94a3b8;
+  margin-top: 5px;
+}
+
+/* ============ INPUT BOX ============ */
 .inputBox{
-  display:flex;
-  padding:10px;
-  background:#1e293b;
+  display: none;
+  flex-direction: column;
+  padding: 10px;
+  background: #1e293b;
+  border-top: 1px solid #334155;
+}
+
+.chatHeader{
+  padding: 10px;
+  background: #0f172a;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: #cbd5e1;
+}
+
+.inputBoxContainer{
+  display: flex;
+  gap: 8px;
 }
 
 .inputBox input{
-  flex:1;
-  margin-right:8px;
+  flex: 1;
+  margin: 0;
+  padding: 10px;
 }
+
+.inputBox button{
+  margin: 0;
+  padding: 10px 20px;
+  width: auto;
+}
+
+/* ============ EMPTY STATE ============ */
+.emptyState{
+  text-align: center;
+  padding: 40px 20px;
+  color: #94a3b8;
+}
+
+.emptyState h3{
+  margin: 10px 0;
+  color: #cbd5e1;
+}
+
+.requestCard{
+  background: #334155;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 12px;
+  border-left: 4px solid #f59e0b;
+}
+
+.requestInfo{
+  margin-bottom: 10px;
+}
+
+.requestName{
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.requestCourse{
+  font-size: 12px;
+  color: #cbd5e1;
+}
+
+.requestActions{
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.requestActions button{
+  flex: 1;
+  margin: 0;
+  padding: 8px;
+}
+
+.settingsItem{
+  background: #334155;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 12px;
+  border-left: 4px solid #8b5cf6;
+}
+
+.settingsLabel{
+  font-size: 12px;
+  color: #94a3b8;
+  margin-bottom: 5px;
+}
+
+.settingsValue{
+  font-weight: bold;
+  font-size: 16px;
+}
+
 </style>
 </head>
 
 <body>
 
-<!-- LOGIN -->
+<!-- ============ LOGIN PAGE ============ -->
 <div class="loginPage" id="loginPage">
   <div class="card">
-    <h2>Nexora</h2>
-    <input id="name" placeholder="Your name">
-    <input id="code" placeholder="College Code">
-    <select id="course">
-      <option value="">Select Course</option>
-      <option>CS</option>
-      <option>CSE</option>
-      <option>AI-DS</option>
-      <option>DS</option>
-      <option>IT</option>
-      <option>AI-ML</option>
-    </select>
-    <button onclick="login()">Enter</button>
+    <h1>Nexora</h1>
+    <p>Student Network Community</p>
+    
+    <div class="formGroup">
+      <label for="name">Full Name</label>
+      <input id="name" placeholder="Enter your name" type="text">
+    </div>
+
+    <div class="formGroup">
+      <label for="code">College Code</label>
+      <input id="code" placeholder="Enter college code" type="text">
+    </div>
+
+    <div class="formGroup">
+      <label for="course">Course</label>
+      <select id="course">
+        <option value="">Select Your Course</option>
+        <option value="CS">Computer Science (CS)</option>
+        <option value="CSE">Computer Science & Engineering (CSE)</option>
+        <option value="AI-DS">AI & Data Science (AI-DS)</option>
+        <option value="DS">Data Science (DS)</option>
+        <option value="IT">Information Technology (IT)</option>
+        <option value="AI-ML">AI & Machine Learning (AI-ML)</option>
+      </select>
+    </div>
+
+    <button onclick="login()">Enter Nexora</button>
+    <div class="error" id="loginError"></div>
   </div>
 </div>
 
-<!-- APP -->
+<!-- ============ APP PAGE ============ -->
 <div class="app" id="app">
 
-  <div class="header" id="headerTitle">Members</div>
+  <div class="header">
+    <div class="headerTitle" id="headerTitle">Members</div>
+    <button class="logoutBtn" onclick="logout()">Logout</button>
+  </div>
 
   <div class="content" id="content"></div>
 
-  <div class="inputBox" id="chatInputBox" style="display:none;">
-    <input id="messageInput" placeholder="Type message...">
-    <button onclick="sendMessage()">Send</button>
+  <div class="inputBox" id="chatInputBox">
+    <div class="chatHeader" id="chatHeader"></div>
+    <div class="inputBoxContainer">
+      <input id="messageInput" placeholder="Type message..." type="text">
+      <button onclick="sendMessage()">Send</button>
+    </div>
   </div>
 
   <div class="bottomNav">
-    <div class="navItem" onclick="showMembers()">👥<br>Members</div>
+    <div class="navItem active" onclick="showMembers()">👥<br>Members</div>
     <div class="navItem" onclick="showRequests()">📩<br>Requests</div>
     <div class="navItem" onclick="showChats()">💬<br>Chats</div>
-    <div class="navItem" onclick="showSettings()">⚙<br>Settings</div>
+    <div class="navItem" onclick="showSettings()">⚙️<br>Settings</div>
   </div>
 
 </div>
 
 <script>
 
+// ============ GLOBAL STATE ============
 let currentUser = "";
 let currentCourse = "";
 let activeChatUser = "";
+let allUsers = [];
+let userRequests = {};
+let conversations = {};
+
+// ============ INITIALIZATION ============
+function initializeApp(){
+  allUsers = JSON.parse(localStorage.getItem("nexora_users")) || [];
+  userRequests = JSON.parse(localStorage.getItem("nexora_requests")) || {};
+  conversations = JSON.parse(localStorage.getItem("nexora_conversations")) || {};
+}
 
 function login(){
-  const name = document.getElementById("name").value;
-  const code = document.getElementById("code").value;
+  const name = document.getElementById("name").value.trim();
+  const code = document.getElementById("code").value.trim();
   const course = document.getElementById("course").value;
+  const errorDiv = document.getElementById("loginError");
 
-  if(name==="" || code!=="1234" || course===""){
-    alert("Invalid details!");
+  // Validation
+  if(name === ""){
+    showError("Please enter your name!");
     return;
+  }
+
+  if(code === ""){
+    showError("Please enter college code!");
+    return;
+  }
+
+  if(code !== "1234"){
+    showError("Invalid college code! (Use: 1234)");
+    return;
+  }
+
+  if(course === ""){
+    showError("Please select a course!");
+    return;
+  }
+
+  // Check for duplicate registration
+  if(allUsers.find(u => u.name.toLowerCase() === name.toLowerCase())){
+    showError("User already registered!");
+    return;
+  }
+
+  // Create new user
+  const newUser = {
+    id: Date.now(),
+    name: name,
+    course: course,
+    joinedDate: new Date().toISOString()
+  };
+
+  allUsers.push(newUser);
+  localStorage.setItem("nexora_users", JSON.stringify(allUsers));
+
+  // Initialize requests object for user
+  if(!userRequests[newUser.id]){
+    userRequests[newUser.id] = {
+      sent: [],
+      received: []
+    };
+    localStorage.setItem("nexora_requests", JSON.stringify(userRequests));
   }
 
   currentUser = name;
   currentCourse = course;
 
-  let users = JSON.parse(localStorage.getItem("users")) || [];
-  users.push({name, course});
-  localStorage.setItem("users", JSON.stringify(users));
-
-  document.getElementById("loginPage").style.display="none";
-  document.getElementById("app").style.display="flex";
+  // Hide login, show app
+  document.getElementById("loginPage").style.display = "none";
+  document.getElementById("app").style.display = "flex";
 
   showMembers();
 }
 
-/* MEMBERS */
+function showError(message){
+  const errorDiv = document.getElementById("loginError");
+  errorDiv.innerText = message;
+  errorDiv.style.display = "block";
+}
+
+function logout(){
+  if(confirm("Are you sure you want to logout?")){
+    currentUser = "";
+    currentCourse = "";
+    activeChatUser = "";
+    document.getElementById("loginPage").style.display = "flex";
+    document.getElementById("app").style.display = "none";
+    document.getElementById("name").value = "";
+    document.getElementById("code").value = "";
+    document.getElementById("course").value = "";
+    document.getElementById("loginError").style.display = "none";
+  }
+}
+
+// ============ MEMBERS ============
 function showMembers(){
-  document.getElementById("headerTitle").innerText="Members";
-  document.getElementById("chatInputBox").style.display="none";
+  updateNavItems("members");
+  document.getElementById("headerTitle").innerText = "Members";
+  document.getElementById("chatInputBox").style.display = "none";
+  activeChatUser = "";
 
   const content = document.getElementById("content");
-  content.innerHTML="";
+  content.innerHTML = "";
 
-  let users = JSON.parse(localStorage.getItem("users")) || [];
+  const membersList = allUsers.filter(u => u.course === currentCourse && u.name !== currentUser);
 
-  users.forEach(u=>{
-    if(u.course===currentCourse && u.name!==currentUser){
-      content.innerHTML+=`
-        <div class="memberCard">
-          ${u.name} (${u.course})
-          <button onclick="sendRequest('${u.name}')">Request</button>
+  if(membersList.length === 0){
+    content.innerHTML = `
+      <div class="emptyState">
+        <h3>No other members yet</h3>
+        <p>Be the first to join your course!</p>
+      </div>
+    `;
+    return;
+  }
+
+  membersList.forEach(member => {
+    content.innerHTML += `
+      <div class="memberCard">
+        <div class="memberInfo">
+          <div class="memberName">${escapeHtml(member.name)}</div>
+          <div class="memberCourse">${member.course}</div>
         </div>
-      `;
-    }
+        <button class="actionBtn" onclick="startChat('${escapeHtml(member.name)}')">Chat</button>
+      </div>
+    `;
   });
 }
 
-/* REQUESTS */
+// ============ REQUESTS ============
 function showRequests(){
-  document.getElementById("headerTitle").innerText="Requests";
-  document.getElementById("chatInputBox").style.display="none";
-  document.getElementById("content").innerHTML="Demo Requests UI";
+  updateNavItems("requests");
+  document.getElementById("headerTitle").innerText = "Friend Requests";
+  document.getElementById("chatInputBox").style.display = "none";
+  activeChatUser = "";
+
+  const content = document.getElementById("content");
+  content.innerHTML = "";
+
+  const currentUserData = allUsers.find(u => u.name === currentUser);
+  if(!currentUserData) return;
+
+  const requests = userRequests[currentUserData.id] || { sent: [], received: [] };
+
+  if(requests.received.length === 0 && requests.sent.length === 0){
+    content.innerHTML = `
+      <div class="emptyState">
+        <h3>No requests</h3>
+        <p>Send a request to someone to connect!</p>
+      </div>
+    `;
+    return;
+  }
+
+  // Received Requests
+  if(requests.received.length > 0){
+    content.innerHTML += "<h3 style='margin-top: 0;'>Received Requests</h3>";
+    requests.received.forEach((req, idx) => {
+      const sender = allUsers.find(u => u.id === req.fromId);
+      if(sender){
+        content.innerHTML += `
+          <div class="requestCard">
+            <div class="requestInfo">
+              <div class="requestName">${escapeHtml(sender.name)}</div>
+              <div class="requestCourse">${sender.course}</div>
+            </div>
+            <div class="requestActions">
+              <button class="actionBtn accept" onclick="acceptRequest('${req.fromId}')">Accept</button>
+              <button class="actionBtn reject" onclick="rejectRequest('${req.fromId}')">Reject</button>
+            </div>
+          </div>
+        `;
+      }
+    });
+  }
+
+  // Sent Requests
+  if(requests.sent.length > 0){
+    content.innerHTML += "<h3>Sent Requests</h3>";
+    requests.sent.forEach((req) => {
+      const recipient = allUsers.find(u => u.id === req.toId);
+      if(recipient){
+        content.innerHTML += `
+          <div class="requestCard" style="border-left-color: #6366f1; opacity: 0.7;">
+            <div class="requestInfo">
+              <div class="requestName">${escapeHtml(recipient.name)}</div>
+              <div class="requestCourse">${recipient.course}</div>
+              <small style="color: #64748b;">Pending...</small>
+            </div>
+          </div>
+        `;
+      }
+    });
+  }
 }
 
-function sendRequest(name){
-  alert("Request sent to "+name+" (Frontend demo)");
+function sendRequest(toUserName){
+  const fromUser = allUsers.find(u => u.name === currentUser);
+  const toUser = allUsers.find(u => u.name === toUserName);
+
+  if(!fromUser || !toUser) return;
+
+  // Initialize if needed
+  if(!userRequests[fromUser.id]) userRequests[fromUser.id] = { sent: [], received: [] };
+  if(!userRequests[toUser.id]) userRequests[toUser.id] = { sent: [], received: [] };
+
+  // Check if already sent
+  if(userRequests[fromUser.id].sent.find(r => r.toId === toUser.id)){
+    alert("Request already sent!");
+    return;
+  }
+
+  // Add request
+  userRequests[fromUser.id].sent.push({ toId: toUser.id, date: new Date().toISOString() });
+  userRequests[toUser.id].received.push({ fromId: fromUser.id, date: new Date().toISOString() });
+
+  localStorage.setItem("nexora_requests", JSON.stringify(userRequests));
+  alert("Request sent to " + toUserName);
 }
 
-/* CHATS */
+function acceptRequest(fromUserId){
+  const currentUserData = allUsers.find(u => u.name === currentUser);
+  if(!currentUserData) return;
+
+  // Remove from received
+  userRequests[currentUserData.id].received = userRequests[currentUserData.id].received.filter(r => r.fromId !== fromUserId);
+
+  // Remove from sender's sent
+  userRequests[fromUserId].sent = userRequests[fromUserId].sent.filter(r => r.toId !== currentUserData.id);
+
+  localStorage.setItem("nexora_requests", JSON.stringify(userRequests));
+  showRequests();
+  alert("Request accepted!");
+}
+
+function rejectRequest(fromUserId){
+  const currentUserData = allUsers.find(u => u.name === currentUser);
+  if(!currentUserData) return;
+
+  // Remove from received
+  userRequests[currentUserData.id].received = userRequests[currentUserData.id].received.filter(r => r.fromId !== fromUserId);
+
+  // Remove from sender's sent
+  userRequests[fromUserId].sent = userRequests[fromUserId].sent.filter(r => r.toId !== currentUserData.id);
+
+  localStorage.setItem("nexora_requests", JSON.stringify(userRequests));
+  showRequests();
+  alert("Request rejected!");
+}
+
+// ============ CHATS ============
 function showChats(){
-  document.getElementById("headerTitle").innerText="Chats";
-  document.getElementById("content").innerHTML="Select a member to chat.";
-  document.getElementById("chatInputBox").style.display="flex";
+  updateNavItems("chats");
+  document.getElementById("headerTitle").innerText = "Messages";
+  document.getElementById("chatInputBox").style.display = "none";
+  activeChatUser = "";
+
+  const content = document.getElementById("content");
+  content.innerHTML = "";
+
+  const chatList = Object.keys(conversations).filter(convKey => {
+    return convKey.includes(currentUser);
+  });
+
+  if(chatList.length === 0){
+    content.innerHTML = `
+      <div class="emptyState">
+        <h3>No conversations yet</h3>
+        <p>Start chatting with a member from the Members section!</p>
+      </div>
+    `;
+    return;
+  }
+
+  chatList.forEach(convKey => {
+    const messages = conversations[convKey];
+    const otherUser = convKey.replace(currentUser + "_", "").replace("_" + currentUser, "");
+    const lastMessage = messages[messages.length - 1];
+
+    content.innerHTML += `
+      <div class="memberCard" onclick="openChat('${escapeHtml(otherUser)}')">
+        <div class="memberInfo">
+          <div class="memberName">${escapeHtml(otherUser)}</div>
+          <div class="memberCourse" style="color: #94a3b8; font-size: 12px;">${escapeHtml(lastMessage.text.substring(0, 50))}...</div>
+        </div>
+        <div style="text-align: right; font-size: 11px; color: #64748b;">
+          ${new Date(lastMessage.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+        </div>
+      </div>
+    `;
+  });
+}
+
+function startChat(username){
+  openChat(username);
+}
+
+function openChat(username){
+  activeChatUser = username;
+  document.getElementById("headerTitle").innerText = "Chat with " + username;
+  document.getElementById("chatInputBox").style.display = "flex";
+  document.getElementById("chatHeader").innerText = "Chatting with: " + username;
+  document.getElementById("messageInput").focus();
+
+  displayChatMessages(username);
+}
+
+function displayChatMessages(username){
+  const convKey = getConversationKey(currentUser, username);
+  const messages = conversations[convKey] || [];
+  const content = document.getElementById("content");
+  content.innerHTML = "";
+
+  if(messages.length === 0){
+    content.innerHTML = `<div class="emptyState"><p>No messages yet. Start the conversation!</p></div>`;
+    return;
+  }
+
+  messages.forEach(msg => {
+    const isSent = msg.from === currentUser;
+    const time = new Date(msg.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    content.innerHTML += `
+      <div class="chatBubble ${isSent ? 'sent' : 'received'}">
+        <div class="chatBubbleUser">${isSent ? 'You' : username}</div>
+        <div>${escapeHtml(msg.text)}</div>
+        <div class="chatBubbleTime">${time}</div>
+      </div>
+    `;
+  });
+
+  // Scroll to bottom
+  content.scrollTop = content.scrollHeight;
 }
 
 function sendMessage(){
   const input = document.getElementById("messageInput");
-  const text = input.value;
-  if(text==="") return;
+  const text = input.value.trim();
 
-  const bubble = document.createElement("div");
-  bubble.className="chatBubble";
-  bubble.innerText=currentUser+": "+text;
+  if(text === "" || activeChatUser === "") return;
 
-  document.getElementById("content").appendChild(bubble);
-  input.value="";
+  const convKey = getConversationKey(currentUser, activeChatUser);
+  if(!conversations[convKey]) conversations[convKey] = [];
+
+  conversations[convKey].push({
+    from: currentUser,
+    text: text,
+    timestamp: new Date().toISOString()
+  });
+
+  localStorage.setItem("nexora_conversations", JSON.stringify(conversations));
+  input.value = "";
+  displayChatMessages(activeChatUser);
 }
 
-/* SETTINGS */
+function getConversationKey(user1, user2){
+  const users = [user1, user2].sort();
+  return users.join("_");
+}
+
+// ============ SETTINGS ============
 function showSettings(){
-  document.getElementById("headerTitle").innerText="Settings";
-  document.getElementById("chatInputBox").style.display="none";
-  document.getElementById("content").innerHTML=`
-    <div class="memberCard">
-      Logged in as: ${currentUser}<br>
-      Course: ${currentCourse}
+  updateNavItems("settings");
+  document.getElementById("headerTitle").innerText = "Settings";
+  document.getElementById("chatInputBox").style.display = "none";
+  activeChatUser = "";
+
+  const currentUserData = allUsers.find(u => u.name === currentUser);
+  const joinDate = currentUserData ? new Date(currentUserData.joinedDate).toLocaleDateString() : "Unknown";
+
+  const content = document.getElementById("content");
+  content.innerHTML = `
+    <div class="settingsItem">
+      <div class="settingsLabel">Name</div>
+      <div class="settingsValue">${escapeHtml(currentUser)}</div>
     </div>
+
+    <div class="settingsItem">
+      <div class="settingsLabel">Course</div>
+      <div class="settingsValue">${currentCourse}</div>
+    </div>
+
+    <div class="settingsItem">
+      <div class="settingsLabel">Joined</div>
+      <div class="settingsValue">${joinDate}</div>
+    </div>
+
+    <div class="settingsItem">
+      <div class="settingsLabel">Members in Course</div>
+      <div class="settingsValue">${allUsers.filter(u => u.course === currentCourse).length}</div>
+    </div>
+
+    <button onclick="logout()" style="margin-top: 20px; background: #ef4444;">Logout</button>
   `;
 }
 
+// ============ UTILITIES ============
+function updateNavItems(active){
+  document.querySelectorAll(".navItem").forEach(item => {
+    item.classList.remove("active");
+  });
+
+  const navItems = document.querySelectorAll(".navItem");
+  const navMap = { members: 0, requests: 1, chats: 2, settings: 3 };
+  
+  if(navMap[active] !== undefined){
+    navItems[navMap[active]].classList.add("active");
+  }
+}
+
+function escapeHtml(text){
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+// Initialize on page load
+window.addEventListener('load', function(){
+  initializeApp();
+});
+
 </script>
+
 </body>
 </html>
