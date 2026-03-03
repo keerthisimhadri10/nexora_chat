@@ -7,106 +7,57 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:Segoe UI}
 
-body{
-  background:#0f172a;
-  color:white;
-  transition:0.3s;
-}
+body{background:#0f172a;color:white;transition:0.3s}
+body.light{background:#f1f5f9;color:#111}
 
-body.light{
-  background:#f1f5f9;
-  color:#111;
-}
-
-/* LOGIN */
 .loginPage{
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  height:100vh;
-}
+display:flex;justify-content:center;align-items:center;height:100vh}
 
 .card{
-  background:#1e293b;
-  padding:30px;
-  border-radius:12px;
-  width:90%;
-  max-width:400px;
-}
+background:#1e293b;padding:25px;border-radius:12px;width:95%;max-width:400px}
 
 body.light .card{background:white}
 
-input{
-  width:100%;
-  padding:10px;
-  margin-bottom:12px;
-  border-radius:6px;
-  border:1px solid #334155;
-}
+input,select{
+width:100%;padding:10px;margin-bottom:12px;border-radius:6px;
+border:1px solid #334155}
 
 button{
-  padding:10px;
-  border:none;
-  border-radius:6px;
-  cursor:pointer;
-  font-weight:bold;
-}
+padding:8px 12px;border:none;border-radius:6px;cursor:pointer;font-weight:bold}
 
 .primary{background:#6366f1;color:white}
-.danger{background:#ef4444;color:white}
 .success{background:#10b981;color:white}
+.danger{background:#ef4444;color:white}
 .gray{background:#64748b;color:white}
 
-/* APP */
 .app{display:none;flex-direction:column;height:100vh}
 
 .header{
-  background:#1e293b;
-  padding:15px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
+background:#1e293b;padding:12px;display:flex;
+justify-content:space-between;align-items:center}
 
 body.light .header{background:#e2e8f0}
 
 .content{flex:1;overflow:auto;padding:15px}
 
-.bottomNav{
-  display:flex;
-  background:#1e293b;
-}
-
+.bottomNav{display:flex;background:#1e293b}
 body.light .bottomNav{background:#e2e8f0}
 
-.navItem{
-  flex:1;
-  text-align:center;
-  padding:10px;
-  cursor:pointer;
-}
-
+.navItem{flex:1;text-align:center;padding:10px;cursor:pointer}
 .navItem.active{background:#6366f1;color:white}
 
 .memberCard{
-  background:#334155;
-  padding:12px;
-  border-radius:8px;
-  margin-bottom:10px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
+background:#334155;padding:12px;border-radius:8px;
+margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
 
 body.light .memberCard{background:#cbd5e1}
 
-.searchBar input{margin-bottom:15px}
+.profilePic{
+width:40px;height:40px;border-radius:50%;object-fit:cover;margin-right:10px}
 
-.smallBtn{
-  padding:6px 10px;
-  font-size:12px;
-  margin-left:5px;
-}
+.row{display:flex;align-items:center}
+
+.searchBar input{margin-bottom:15px}
 
 .empty{text-align:center;margin-top:30px;color:gray}
 </style>
@@ -115,187 +66,222 @@ body.light .memberCard{background:#cbd5e1}
 
 <!-- LOGIN -->
 <div class="loginPage" id="loginPage">
-  <div class="card">
-    <h2>Nexora</h2><br>
-    <input id="name" placeholder="Enter Name">
-    <input id="code" placeholder="College Code">
-    <button class="primary" onclick="login()">Login</button>
-    <p id="error" style="color:red;margin-top:10px"></p>
-  </div>
+<div class="card">
+<h2>Nexora</h2><br>
+<input id="name" placeholder="Enter Name">
+<input id="code" placeholder="College Code (1234)">
+<select id="course">
+<option value="">Select Course</option>
+<option>CS</option>
+<option>CSE</option>
+<option>AI-DS</option>
+<option>IT</option>
+<option>AI-ML</option>
+</select>
+<button class="primary" onclick="login()">Login</button>
+<p id="error" style="color:red;margin-top:10px"></p>
+</div>
 </div>
 
 <!-- APP -->
 <div class="app" id="app">
 
-  <div class="header">
-    <div id="headerTitle">Members</div>
-    <div>
-      <button class="gray smallBtn" onclick="toggleTheme()">Theme</button>
-      <button class="danger smallBtn" onclick="logout()">Logout</button>
-    </div>
-  </div>
+<div class="header">
+<div id="headerTitle">Members</div>
+<div>
+<button class="gray" onclick="toggleTheme()">Theme</button>
+<button class="danger" onclick="logout()">Logout</button>
+</div>
+</div>
 
-  <div class="content" id="content"></div>
+<div class="content" id="content"></div>
 
-  <div class="bottomNav">
-    <div class="navItem active" onclick="showMembers()">Members</div>
-    <div class="navItem" onclick="showFriends()">Friends</div>
-    <div class="navItem" onclick="showProfile()">Profile</div>
-  </div>
+<div class="bottomNav">
+<div class="navItem active" onclick="showMembers()">Members</div>
+<div class="navItem" onclick="showRequests()">Requests</div>
+<div class="navItem" onclick="showProfile()">Profile</div>
+</div>
 
 </div>
 
 <script>
 
-let currentUser=""
+let currentUserId=null
 let users=[]
-let friends={}
 let requests={}
 
 function init(){
-  users=JSON.parse(localStorage.getItem("nx_users"))||[]
-  friends=JSON.parse(localStorage.getItem("nx_friends"))||{}
-  requests=JSON.parse(localStorage.getItem("nx_requests"))||{}
+users=JSON.parse(localStorage.getItem("nx_users"))||[]
+requests=JSON.parse(localStorage.getItem("nx_requests"))||{}
+}
+
+function saveData(){
+localStorage.setItem("nx_users",JSON.stringify(users))
+localStorage.setItem("nx_requests",JSON.stringify(requests))
 }
 
 function login(){
-  init()
-  const name=document.getElementById("name").value.trim()
-  const code=document.getElementById("code").value.trim()
-  if(name==""||code=="1234"==false){
-    document.getElementById("error").innerText="Invalid details (Code:1234)"
-    return
-  }
+init()
+const name=document.getElementById("name").value.trim()
+const code=document.getElementById("code").value.trim()
+const course=document.getElementById("course").value
 
-  let user=users.find(u=>u.name.toLowerCase()==name.toLowerCase())
-  if(!user){
-    user={id:Date.now(),name:name,joined:new Date()}
-    users.push(user)
-    localStorage.setItem("nx_users",JSON.stringify(users))
-  }
+if(name==""||code!="1234"||course==""){
+document.getElementById("error").innerText="Fill all details correctly"
+return
+}
 
-  if(!friends[user.id]) friends[user.id]=[]
-  if(!requests[user.id]) requests[user.id]={sent:[],received:[]}
+let user=users.find(u=>u.name.toLowerCase()==name.toLowerCase())
 
-  localStorage.setItem("nx_friends",JSON.stringify(friends))
-  localStorage.setItem("nx_requests",JSON.stringify(requests))
+if(!user){
+user={
+id:Date.now(),
+name:name,
+course:course,
+joined:new Date(),
+photo:""
+}
+users.push(user)
+}
 
-  currentUser=user.name
-  document.getElementById("loginPage").style.display="none"
-  document.getElementById("app").style.display="flex"
-  showMembers()
+currentUserId=user.id
+
+if(!requests[user.id]) requests[user.id]={sent:[],received:[]}
+
+saveData()
+
+document.getElementById("loginPage").style.display="none"
+document.getElementById("app").style.display="flex"
+
+showMembers()
 }
 
 function logout(){
-  currentUser=""
-  document.getElementById("loginPage").style.display="flex"
-  document.getElementById("app").style.display="none"
+currentUserId=null
+document.getElementById("loginPage").style.display="flex"
+document.getElementById("app").style.display="none"
 }
 
 function showMembers(){
-  setActive(0)
-  document.getElementById("headerTitle").innerText="Members"
-  const content=document.getElementById("content")
-  content.innerHTML=`
-    <div class="searchBar">
-      <input type="text" id="search" placeholder="Search users..." onkeyup="renderMembers()">
-    </div>
-    <div id="list"></div>
-  `
-  renderMembers()
+setActive(0)
+document.getElementById("headerTitle").innerText="Members"
+
+const content=document.getElementById("content")
+content.innerHTML=`
+<div class="searchBar">
+<input type="text" id="searchInput" placeholder="Search users..." onkeyup="renderMembers()">
+</div>
+<div id="membersList"></div>
+`
+renderMembers()
 }
 
 function renderMembers(){
-  const filter=document.getElementById("search").value.toLowerCase()
-  const list=document.getElementById("list")
-  list.innerHTML=""
-  const me=users.find(u=>u.name==currentUser)
+const filter=document.getElementById("searchInput").value.toLowerCase()
+const list=document.getElementById("membersList")
+list.innerHTML=""
 
-  users.filter(u=>u.name!=currentUser && u.name.toLowerCase().includes(filter))
-  .forEach(u=>{
-    const isFriend=friends[me.id].includes(u.id)
-    const sent=requests[me.id].sent.includes(u.id)
+users
+.filter(u=>u.id!=currentUserId)
+.filter(u=>u.name.toLowerCase().includes(filter))
+.forEach(u=>{
+list.innerHTML+=`
+<div class="memberCard">
+<div class="row">
+${u.photo?`<img src="${u.photo}" class="profilePic">`:``}
+<div>
+<div><b>${u.name}</b></div>
+<div style="font-size:12px">${u.course}</div>
+</div>
+</div>
+<button class="primary" onclick="sendRequest(${u.id})">Add</button>
+</div>
+`
+})
 
-    list.innerHTML+=`
-      <div class="memberCard">
-        <div>${u.name}</div>
-        <div>
-          ${isFriend?
-            `<button class="danger smallBtn" onclick="removeFriend(${u.id})">Remove</button>`:
-            sent?
-            `<button class="gray smallBtn">Sent</button>`:
-            `<button class="primary smallBtn" onclick="sendRequest(${u.id})">Add</button>`
-          }
-        </div>
-      </div>
-    `
-  })
-
-  if(list.innerHTML=="") list.innerHTML='<div class="empty">No users found</div>'
+if(list.innerHTML==""){
+list.innerHTML='<div class="empty">No users found</div>'
+}
 }
 
 function sendRequest(id){
-  const me=users.find(u=>u.name==currentUser)
-  requests[me.id].sent.push(id)
-  requests[id].received.push(me.id)
-  localStorage.setItem("nx_requests",JSON.stringify(requests))
-  renderMembers()
+requests[currentUserId].sent.push(id)
+requests[id].received.push(currentUserId)
+saveData()
+alert("Request sent")
 }
 
-function showFriends(){
-  setActive(1)
-  document.getElementById("headerTitle").innerText="Friends"
-  const content=document.getElementById("content")
-  const me=users.find(u=>u.name==currentUser)
-  const myFriends=friends[me.id]
+function showRequests(){
+setActive(1)
+document.getElementById("headerTitle").innerText="Requests"
 
-  if(myFriends.length==0){
-    content.innerHTML='<div class="empty">No Friends</div>'
-    return
-  }
+const content=document.getElementById("content")
+const myReq=requests[currentUserId]
 
-  content.innerHTML=""
-  myFriends.forEach(fid=>{
-    const u=users.find(x=>x.id==fid)
-    content.innerHTML+=`
-      <div class="memberCard">
-        <div>${u.name}</div>
-      </div>
-    `
-  })
+if(myReq.received.length==0){
+content.innerHTML='<div class="empty">No requests</div>'
+return
 }
 
-function removeFriend(id){
-  const me=users.find(u=>u.name==currentUser)
-  friends[me.id]=friends[me.id].filter(f=>f!=id)
-  friends[id]=friends[id].filter(f=>f!=me.id)
-  localStorage.setItem("nx_friends",JSON.stringify(friends))
-  renderMembers()
+content.innerHTML=""
+
+myReq.received.forEach(id=>{
+const user=users.find(u=>u.id==id)
+content.innerHTML+=`
+<div class="memberCard">
+<div>${user.name}</div>
+<button class="success" onclick="acceptRequest(${id})">Accept</button>
+</div>
+`
+})
+}
+
+function acceptRequest(id){
+requests[currentUserId].received=
+requests[currentUserId].received.filter(r=>r!=id)
+saveData()
+alert("Friend Added")
+showRequests()
 }
 
 function showProfile(){
-  setActive(2)
-  document.getElementById("headerTitle").innerText="Profile"
-  const content=document.getElementById("content")
-  const me=users.find(u=>u.name==currentUser)
+setActive(2)
+document.getElementById("headerTitle").innerText="Profile"
 
-  content.innerHTML=`
-    <div class="memberCard">
-      <div>
-        <h3>${me.name}</h3>
-        <p>Joined: ${new Date(me.joined).toLocaleDateString()}</p>
-      </div>
-    </div>
-  `
+const user=users.find(u=>u.id==currentUserId)
+
+document.getElementById("content").innerHTML=`
+<div class="memberCard">
+<div>
+<h3>${user.name}</h3>
+<p>Course: ${user.course}</p>
+<p>Joined: ${new Date(user.joined).toLocaleDateString()}</p>
+<br>
+<input type="file" onchange="uploadPhoto(event)">
+</div>
+</div>
+`
+}
+
+function uploadPhoto(e){
+const file=e.target.files[0]
+const reader=new FileReader()
+reader.onload=function(){
+const user=users.find(u=>u.id==currentUserId)
+user.photo=reader.result
+saveData()
+alert("Photo updated")
+}
+reader.readAsDataURL(file)
 }
 
 function toggleTheme(){
-  document.body.classList.toggle("light")
+document.body.classList.toggle("light")
 }
 
 function setActive(i){
-  document.querySelectorAll(".navItem").forEach(n=>n.classList.remove("active"))
-  document.querySelectorAll(".navItem")[i].classList.add("active")
+document.querySelectorAll(".navItem").forEach(n=>n.classList.remove("active"))
+document.querySelectorAll(".navItem")[i].classList.add("active")
 }
 
 init()
