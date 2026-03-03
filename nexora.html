@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Nexora - NIAT_MRV_OFFICIAL</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #0f172a;
+      color: white;
+    }
+
+    .center {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .card {
+      background: #1e293b;
+      padding: 30px;
+      border-radius: 15px;
+      width: 300px;
+      text-align: center;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 8px;
+      border: none;
+      outline: none;
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 10px;
+      width: 100%;
+      border: none;
+      border-radius: 8px;
+      background: #6366f1;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    #chatPage {
+      display: none;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: #1e293b;
+      padding: 15px;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    #messages {
+      flex: 1;
+      padding: 15px;
+      overflow-y: auto;
+    }
+
+    .message {
+      background: #334155;
+      padding: 8px 12px;
+      margin: 5px 0;
+      border-radius: 10px;
+      width: fit-content;
+    }
+
+    .inputBox {
+      display: flex;
+      padding: 10px;
+      background: #1e293b;
+    }
+
+    .inputBox input {
+      flex: 1;
+      margin-right: 10px;
+    }
+    .group {
+  padding: 10px;
+  margin: 5px 0;
+  background: #334155;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.group:hover {
+  background: #475569;
+}
+  </style>
+</head>
+
+<body>
+
+<div id="loginPage" class="center">
+  <div class="card">
+    <h2>Nexora</h2>
+    <p>NIAT_MRV_OFFICIAL</p>
+    <input type="text" id="username" placeholder="Enter your name">
+    <input type="text" id="collegeCode" placeholder="Enter college code">
+    <button onclick="login()">Enter Nexora</button>
+  </div>
+</div>
+
+<div id="chatPage" style="display:none;">
+  <div style="display:flex; height:100vh;">
+
+    <div style="width:250px; background:#1e293b; padding:15px;">
+      <h3>Nexora Groups</h3>
+      <div onclick="openGroup('CSE-A')" class="group">CSE-A</div>
+      <div onclick="openGroup('AI-DS')" class="group">AI-DS</div>
+      <div onclick="openGroup('NIAT Updates')" class="group">NIAT Updates</div>
+    </div>
+
+    <div style="flex:1; display:flex; flex-direction:column;">
+      <header id="groupTitle">Select a Group</header>
+      <div id="messages"></div>
+      <div class="inputBox">
+        <input type="text" id="messageInput" placeholder="Type message...">
+        <button onclick="sendMessage()">Send</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+<script>
+  let currentUser = "";
+
+  function login() {
+    const name = document.getElementById("username").value;
+    const code = document.getElementById("collegeCode").value;
+
+    if (name === "" || code !== "NIAT_MRV_OFFICIAL") {
+      alert("Invalid name or college code!");
+      return;
+    }
+
+    currentUser = name;
+
+    document.getElementById("loginPage").style.display = "none";
+    document.getElementById("chatPage").style.display = "flex";
+  }
+
+ let currentGroup = "";
+
+function openGroup(groupName) {
+  currentGroup = groupName;
+  document.getElementById("groupTitle").innerText = groupName;
+  document.getElementById("messages").innerHTML = "";
+}
+
+function sendMessage() {
+  const input = document.getElementById("messageInput");
+  const messageText = input.value;
+
+  if (messageText === "" || currentGroup === "") {
+    alert("Select a group first!");
+    return;
+  }
+
+  const messageDiv = document.createElement("div");
+  messageDiv.className = "message";
+  messageDiv.innerText = currentUser + ": " + messageText;
+
+  document.getElementById("messages").appendChild(messageDiv);
+  input.value = "";
+}
+</script>
+
+</body>
+</html>
