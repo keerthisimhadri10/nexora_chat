@@ -60,6 +60,57 @@ width:40px;height:40px;border-radius:50%;object-fit:cover;margin-right:10px}
 .searchBar input{margin-bottom:15px}
 
 .empty{text-align:center;margin-top:30px;color:gray}
+  /* CHAT SYSTEM */
+
+.chatBox{
+position:fixed;
+bottom:70px;
+right:20px;
+width:300px;
+height:350px;
+background:#1e293b;
+border-radius:10px;
+display:flex;
+flex-direction:column;
+overflow:hidden;
+}
+
+.chatMessages{
+flex:1;
+padding:10px;
+overflow-y:auto;
+font-size:14px;
+}
+
+.chatInputArea{
+display:flex;
+padding:8px;
+background:#334155;
+}
+
+.chatInputArea input{
+flex:1;
+margin:0;
+border:none;
+padding:8px;
+border-radius:5px;
+}
+
+.chatInputArea button{
+margin-left:5px;
+}
+
+.emojiPanel{
+display:none;
+padding:5px;
+background:#475569;
+font-size:18px;
+cursor:pointer;
+}
+
+.emojiPanel span{
+margin:4px;
+}
 </style>
 </head>
 <body>
@@ -103,7 +154,27 @@ width:40px;height:40px;border-radius:50%;object-fit:cover;margin-right:10px}
 </div>
 
 </div>
+<!-- CHAT BOX -->
+<div class="chatBox" id="chatBox" style="display:none">
 
+<div class="chatMessages" id="chatMessages"></div>
+
+<div class="emojiPanel" id="emojiPanel">
+<span onclick="addEmoji('😀')">😀</span>
+<span onclick="addEmoji('😂')">😂</span>
+<span onclick="addEmoji('😍')">😍</span>
+<span onclick="addEmoji('😎')">😎</span>
+<span onclick="addEmoji('🔥')">🔥</span>
+<span onclick="addEmoji('👍')">👍</span>
+</div>
+
+<div class="chatInputArea">
+<button onclick="toggleEmoji()">😀</button>
+<input id="chatInput" placeholder="Type message">
+<button onclick="sendChat()">Send</button>
+</div>
+
+</div>
 <script>
 
 let currentUserId=null
@@ -285,6 +356,51 @@ document.querySelectorAll(".navItem")[i].classList.add("active")
 }
 
 init()
+  /* CHAT FUNCTIONS */
+
+let chats = JSON.parse(localStorage.getItem("nx_chats")) || []
+
+function openChat(){
+document.getElementById("chatBox").style.display="flex"
+renderChat()
+}
+
+function sendChat(){
+const input=document.getElementById("chatInput")
+const msg=input.value.trim()
+
+if(msg=="") return
+
+chats.push({
+user:currentUserId,
+text:msg,
+time:Date.now()
+})
+
+localStorage.setItem("nx_chats",JSON.stringify(chats))
+input.value=""
+renderChat()
+}
+
+function renderChat(){
+const box=document.getElementById("chatMessages")
+box.innerHTML=""
+
+chats.forEach(c=>{
+box.innerHTML+=`<div><b>${c.user}</b>: ${c.text}</div>`
+})
+
+box.scrollTop=box.scrollHeight
+}
+
+function toggleEmoji(){
+const panel=document.getElementById("emojiPanel")
+panel.style.display=panel.style.display=="block"?"none":"block"
+}
+
+function addEmoji(e){
+document.getElementById("chatInput").value+=e
+}
 </script>
 </body>
 </html>
